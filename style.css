@@ -1,0 +1,19 @@
+canvas {
+  border: 1px solid black;
+}
+.container1 {
+  display: flex;
+  justify-content: center;
+  margin: 2vh 0;
+}
+.container2 {
+  display: flex;
+  justify-content: center;
+}
+P {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+  font-size: small;
+}

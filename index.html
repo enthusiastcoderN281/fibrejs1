@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://rawgit.com/kangax/fabric.js/master/dist/fabric.min.js"></script>
+    <p>
+      JUST A REQUEST : PLZZ USE IMAGES OF SIZE LESSS THAN SCREENS SIZE TO VIEW
+      PROPER DEMO
+    </p>
+    <p>AS I HAVENT WRITTEN CODE FOR RESIZING UPLOADED IMAGE</p>
+    <p>USE IMAGE I HAVE UPLOADED ON GITHUB REPO IF U WANT</p>
+    <div class="container1"><input type="file" id="file" /><br /></div>
+    <div class="container2">
+      <canvas id="canvas"></canvas>
+    </div>
+  </body>
+  <script>
+    var canvas = new fabric.Canvas("canvas");
+    console.log(canvas);
+
+    document.getElementById("file").addEventListener("change", function (e) {
+      var file = e.target.files[0];
+      var reader = new FileReader();
+      reader.onload = function (f) {
+        const image = new Image();
+        image.src = f.target.result;
+
+        image.onload = (f) => {
+          window.height1 = f.target.height;
+          window.width1 = f.target.width;
+          console.log(height1);
+          console.log(width1);
+          function setcanvasSize() {
+            let canvas1 = document.getElementById("canvas");
+            canvas.setDimensions({
+              width: window.width1,
+              height: window.height1,
+            });
+
+            console.log(window.height1);
+            console.log(canvas1);
+          }
+          setcanvasSize();
+        };
+
+        var data = f.target.result;
+        fabric.Image.fromURL(data, function (img) {
+          var oImg = img
+            .set({
+              left: 0,
+              top: 0,
+              angle: 0,
+              width: window.width1,
+              height: window.height1,
+            })
+            .scale(1);
+          canvas.add(oImg).renderAll();
+          var a = canvas.setActiveObject(oImg);
+          var dataURL = canvas.toDataURL({ format: "png", quality: 1 });
+        });
+      };
+      reader.readAsDataURL(file);
+    });
+
+    canvas.on("mouse:wheel", function (opt) {
+      var delta = opt.e.deltaY;
+      var zoom = canvas.getZoom();
+      zoom *= 0.999 ** delta;
+      if (zoom > 20) zoom = 20;
+      if (zoom < 1) zoom = 1;
+      canvas.zoomToPoint({ x: opt.e.offsetX, y: opt.e.offsetY }, zoom);
+      opt.e.preventDefault();
+      opt.e.stopPropagation();
+      var vpt = this.viewportTransform;
+      if (zoom < 400 / window.height1) {
+        vpt[4] = 200 - (window.width1 * zoom) / 2;
+        vpt[5] = 200 - (window.height1 * zoom) / 2;
+      } else {
+        if (vpt[4] >= 0) {
+          vpt[4] = 0;
+        } else if (vpt[4] < canvas.getWidth() - window.width1 * zoom) {
+          vpt[4] = canvas.getWidth() - window.width1 * zoom;
+        }
+        if (vpt[5] >= 0) {
+          vpt[5] = 0;
+        } else if (vpt[5] < canvas.getHeight() - window.height1 * zoom) {
+          vpt[5] = canvas.getHeight() - window.height1 * zoom;
+        }
+      }
+    });
+  </script>
+</html>
